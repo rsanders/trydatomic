@@ -54,6 +54,7 @@
                 "/javascript/jquery-console/jquery.console.js"
                 "/codemirror/lib/codemirror.js"
                 "/codemirror/keymap/emacs.js"
+                "/javascript/cm-keymap.js"
                 "/codemirror/mode/clojure/clojure.js"
                 "/javascript/trydatomic.js")
     [:title "Try Clojure"]]
