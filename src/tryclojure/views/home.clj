@@ -58,7 +58,7 @@
       [:div#header
        [:h1
         [:span.logo-try "Try"] " "
-        [:span.logo-clojure "Clo" [:em "j"] "ure"]]]
+        [:span.logo-clojure "Datomic"]]]
       [:div#container
        [:div#console.console]
        [:div#buttons

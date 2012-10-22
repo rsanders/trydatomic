@@ -1,9 +1,10 @@
-(ns tryclojure.views.eval
+(ns tryclojure.views.datalog
   (:require [noir.core :refer [defpage]]
-            [tryclojure.models.eval :refer [eval-request]]
+            [tryclojure.models.datalog :refer [eval-request]]
+            [noir.session :as session]
             [noir.response :as resp]))
 
-(defpage "/evalold.json" {:keys [expr jsonp]}
+(defpage "/eval.json" {:keys [expr jsonp]}
   (let [{:keys [expr result error message] :as res} (eval-request expr)
         data (if error
                res
@@ -14,3 +15,5 @@
     (if jsonp
       (resp/jsonp jsonp data)
       (resp/json data))))
+
+

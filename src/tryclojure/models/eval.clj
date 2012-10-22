@@ -2,7 +2,9 @@
   (:require [clojail.testers :refer [secure-tester-without-def blanket]]
             [clojail.core :refer [sandbox]]
             [clojure.stacktrace :refer [root-cause]]
+            [webcli.util.db :as db]
             [noir.session :as session])
+  (:use [datomic.api :only [db q] :as d])
   (:import java.io.StringWriter
 	   java.util.concurrent.TimeoutException))
 
@@ -23,6 +25,9 @@
   (sandbox try-clojure-tester
            :timeout 2000
            :init '(do (require '[clojure.repl :refer [doc source]])
+                      (require '[datomic.api :as datomic :refer [db q]])
+                      (require '[webcli.util.db :as dbutil])
+                      (def conn (dbutil/create-sample-database (gensym "trydb")))
                       (future (Thread/sleep 600000)
                               (-> *ns* .getName remove-ns)))))
 
