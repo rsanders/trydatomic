@@ -77,6 +77,17 @@ function eval_clojure(code) {
     return data;
 }
 
+function eval_query(code) {
+    var data;
+    $.ajax({
+               url: "query.json",
+               data: { expr : code },
+               async: false,
+               success: function(res) { data = res; }
+           });
+    return data;
+}
+
 function html_escape(val) {
     var result = val;
     result = result.replace(/\n/g, "<br/>");
@@ -131,7 +142,7 @@ function onHandle(line, report) {
     if (doCommand(input, report)) return;
 
     // perform evaluation
-    var data = eval_clojure(input);
+    var data = eval_query(input);
 
     // handle error
     if (data.error) {

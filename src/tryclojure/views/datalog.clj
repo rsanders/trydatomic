@@ -4,7 +4,7 @@
             [noir.session :as session]
             [noir.response :as resp]))
 
-(defpage "/eval.json" {:keys [expr jsonp]}
+(defpage "/query.json" {:keys [expr jsonp]}
   (let [{:keys [expr result error message] :as res} (eval-request expr)
         data (if error
                res

@@ -3,7 +3,7 @@
             [tryclojure.models.eval :refer [eval-request]]
             [noir.response :as resp]))
 
-(defpage "/evalold.json" {:keys [expr jsonp]}
+(defpage "/eval.json" {:keys [expr jsonp]}
   (let [{:keys [expr result error message] :as res} (eval-request expr)
         data (if error
                res
