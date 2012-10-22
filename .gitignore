@@ -1,5 +1,7 @@
+.lein-deps-sum
 pom.xml
 *jar
 lib
 classes
+targets
 *~
