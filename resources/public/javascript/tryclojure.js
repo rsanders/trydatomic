@@ -166,8 +166,8 @@ var controller;
 
 $(document).ready(function() {
     controller = $("#console").console({
-        welcomeMessage:'Enter some Clojure code to be evaluated.',
-        promptLabel: 'Clojure> ',
+        welcomeMessage:'Enter a Datalog query to be evaluated.',
+        promptLabel: 'Datalog> ',
         commandValidate: onValidate,
         commandHandle: onHandle,
         autofocus:true,

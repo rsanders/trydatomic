@@ -40,7 +40,7 @@ body {
 }
 
 #console {
- height: 220px;
+ height: 420px;
  background: #eee;
  margin: 10px;
  border-radius: 5px;
@@ -50,7 +50,7 @@ body {
 
 #console div.jquery-console-inner { 
  width:580px;
- height:200px; 
+ height:400px; 
  margin: 10px 10px;
  overflow:auto; 
  text-align:left;
