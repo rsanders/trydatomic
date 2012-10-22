@@ -48,10 +48,10 @@
 (defn root-html []
   (html5
    [:head
-    (include-css "/resources/public/css/tryclojure.css")
+    (include-css "/css/tryclojure.css")
     (include-js "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
-                "/resources/public/javascript/jquery-console/jquery.console.js"
-                "/resources/public/javascript/tryclojure.js")
+                "/javascript/jquery-console/jquery.console.js"
+                "/javascript/tryclojure.js")
     [:title "Try Clojure"]]
    [:body
     [:div#wrapper

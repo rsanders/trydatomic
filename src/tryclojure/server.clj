@@ -2,7 +2,6 @@
   (:require [noir.server :as server]
             [ring.middleware.file :refer [wrap-file]]))
 
-(server/add-middleware wrap-file (System/getProperty "user.dir"))
 (server/load-views "src/tryclojure/views")
 
 (defn to-port [s]
@@ -13,6 +12,8 @@
    (or (to-port port)
        (to-port (System/getenv "PORT")) ;; For deploying to Heroku
        8801)
-   {:session-cookie-attrs {:max-age 600}}))
+   {:session-cookie-attrs {:max-age 600}
+    :resource-root "resources/public"
+    :resource-options {:root "resources/public"}}))
 
 (defn -main [& args] (tryclj (first args)))
