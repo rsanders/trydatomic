@@ -1,6 +1,9 @@
-# tryclojure
+# trydatomic
 
-TryClojure is a online Clojure REPL written using Noir and Chris Done's jquery console (you're awesome, Chris).
+TryDatomic is an online Datomic REPL based on the excellent TryClojure project by 
+Raynes et al.
+
+TryClojure was written using Noir and Chris Done's jquery console (you're awesome, Chris).
 
 ## Usage
 
