@@ -6,8 +6,9 @@
 (defpartial links []
   (unordered-list
    [(link-to "http://clojure.org" "The official Clojure website")
+    (link-to "http://datomic.com" "The official Datomic website") 
     (link-to "http://dev.clojure.org/display/doc/Getting+Started" "Getting started with Clojure")
-    (link-to "http://groups.google.com/group/clojure" "Clojure mailing list")
+    (link-to "http://groups.google.com/group/datomic" "Clojure mailing list")
     (link-to "http://java.ociweb.com/mark/clojure/article.html" "A comprehensive Clojure tutorial")
     (link-to "http://joyofclojure.com/" "The Joy of Clojure: a book by Michael Fogus and Chris Houser")
     (link-to "http://disclojure.org" "Disclojure")
@@ -72,16 +73,17 @@
         "Built with "
         (link-to "http://webnoir.org" "Noir")
         "."]]
-      (javascript-tag
-       "var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-27340918-1']);
-        _gaq.push(['_trackPageview']);
+      ; (javascript-tag
+      ;  "var _gaq = _gaq || [];
+      ;   _gaq.push(['_setAccount', 'UA-27340918-1']);
+      ;   _gaq.push(['_trackPageview']);
 
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();")]]]))
+      ;   (function() {
+      ;     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ;     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      ;     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      ;   })();")
+      ]]]))
 
 (defpage "/" []
   (root-html))
