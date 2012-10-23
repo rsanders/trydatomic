@@ -12,7 +12,9 @@ function sendbuffer(cm) {
 
 
 var TryDatomic = {
-    sendbuffer: sendbuffer,
+    sendbuffer: function() {
+        this.sendQuery(this.getEditorSelection());
+    },
 
     sendQuery:    function(query)  {
         // perform evaluation
@@ -27,6 +29,17 @@ var TryDatomic = {
         this.handleResult(data.result);
     },
 
+    getEditorSelection: function(cm) {
+        cm = cm || this.editor;
+        // take either the selection or the entire buffer
+        var input = cm.getSelection();
+        if (input == null || $.trim(input) == '') {
+            input = cm.getValue();
+        }
+
+        return input;
+    },
+
     eval_query: function(code) {
         var data;
         $.ajax({
@@ -38,12 +51,16 @@ var TryDatomic = {
         return data;
     },
 
-    handleResult: function(result) { alert(result); },
-    handleError:  function(error)  { alert(error); }
+    handleResult: function(result) {
+        this.resultsbox.setValue(result);
+    },
+    handleError:  function(error)  {
+        this.resultsbox.setValue(error);
+    }
 }
 
 $(document).ready(function() {
-    var myCodeMirror = CodeMirror(document.getElementById('console'), {
+    TryDatomic.editor = CodeMirror.fromTextArea(document.getElementById('userinput'), {
       value: "",
       mode:  "clojure",
       lineNumbers: true,
@@ -52,5 +69,20 @@ $(document).ready(function() {
       extraKeys: {
         // "Ctrl-Enter": function(cm) { TryDatomic.sendbuffer(cm); } 
       }
+  });
+  $('.userinput .CodeMirror-scroll').height('500px');
+  TryDatomic.resultsbox = CodeMirror.fromTextArea(document.getElementById('result'), {
+      value: "",
+      mode:  "clojure",
+      lineNumbers: true,
+      keyMap: "trydatomic",
+      fixedGutter: true,
+      readOnly: true,
+  });
+  $('.result .CodeMirror-scroll').height('600px');
+
+  // setup buttons
+  $('#btn_query').click(function() {
+    TryDatomic.sendbuffer(TryDatomic.editor);
   });
 });

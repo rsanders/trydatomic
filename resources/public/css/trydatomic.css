@@ -1,0 +1,8 @@
+  #userinput, #result {
+    width: 90%;
+    height: 800px;
+  }
+  .CodeMirror pre { 
+    line-height: inherit; 
+    color: inherit; 
+  } 
