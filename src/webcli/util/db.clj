@@ -13,7 +13,10 @@
       @(d/transact conn data)
       conn)))
 
-(defn run-query [query conn] 
-  (let [results (d/q query (d/db conn))]
+(defn log [string]
+  (.debug (org.slf4j.LoggerFactory/getLogger "db") string))
+
+(defn run-query [query conn otherargs] 
+  (let [results (apply d/q (concat (list query (d/db conn)) otherargs))]
     (println "Found" (count results) "results")
     (doseq [x results] (println x))))

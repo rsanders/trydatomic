@@ -9,9 +9,21 @@
   (:import java.io.StringWriter
      java.util.concurrent.TimeoutException))
 
+;; see https://gist.github.com/3132207
+
+(defn log [& args]
+  (.info (org.slf4j.LoggerFactory/getLogger "datalog") (apply str args)))
+
+(defn split-query [query]
+  (log "presplit query is " query)
+  (if (= :find (first (first query)))
+    [(first query) (rest query)]
+    [(first (first query)) (rest (first query))]))
+
 (defn make-query-form [query]
-  `(dbutil/run-query '~query ~'conn) 
-  )
+  (let [[findexpr otherargs] (split-query query)]
+    `(dbutil/run-query '~findexpr ~'conn '~otherargs)
+  ))
 
 (defn eval-query [query sbox]
   (let [form (make-query-form query)]
@@ -21,7 +33,7 @@
          :result [out result]}))))
 
 (defn eval-query-string [expr sbox]
-  (let [form (binding [*read-eval* false] (read-string expr))]
+  (let [form (binding [*read-eval* false] (read-string (str "[" expr "]")))]
     (eval-query form sbox)))
 
 (defn get-conn []
