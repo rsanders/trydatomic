@@ -90,6 +90,9 @@
       ;   })();")
       ]]]))
 
+(defpage "/" []
+  (slurp "resources/public/divshot.html"))
+
 (defpage "/cm" []
   (root-html))
 

@@ -85,7 +85,7 @@
       ;   })();")
       ]]]))
 
-(defpage "/" []
+(defpage "/oldhome" []
   (root-html))
 
 (defpage "/home" []
