@@ -172,21 +172,29 @@ $(document).ready(
                                                         });
         $('.result .CodeMirror-scroll').height('600px');
         
+        var trackAction = function(action) {
+            _gaq.push(['_trackEvent', 'UI', action, 'buffer']);
+        }
+
         // setup buttons
         $('#btn_query').click(
             function() {
+                trackAction('query');
                 TryDatomic.doQuery(TryDatomic.editor);
             });
         $('#btn_transact').click(
             function() {
+                trackAction('transact');
                 TryDatomic.doTransact(TryDatomic.editor);
             });
         $('#btn_resetdb').click(
             function() {
+                trackAction('resetdb');
                 TryDatomic.resetDB();
             });
         $('#btn_eval').click(
             function() {
+                trackAction('eval');
                 TryDatomic.doEval(TryDatomic.editor);
             });
     });
