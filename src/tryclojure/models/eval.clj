@@ -8,14 +8,16 @@
   (:import java.io.StringWriter
 	   java.util.concurrent.TimeoutException))
 
-(defn eval-form [form sbox]
+(defn eval-form [forms sbox]
   (with-open [out (StringWriter.)]
-    (let [result (sbox form {#'*out* out})]
-      {:expr form
-       :result [out result]})))
+    (let [results (map #(sbox % {#'*out* out}) forms)]
+      {:expr forms
+       :exprs forms
+       :result [out (last results)]
+       :results results})))
 
 (defn eval-string [expr sbox]
-  (let [form (binding [*read-eval* false] (read-string expr))]
+  (let [form (binding [*read-eval* false] (read-string (str "[" expr "]")))]
     (eval-form form sbox)))
 
 (def try-clojure-tester

@@ -35,7 +35,7 @@ var TryDatomic = {
             return;
         }
 
-        this.handleResult(data.result);
+        this.handleResult(data.results.join("\n"));
     },
 
     doQuery: function() {
@@ -181,6 +181,6 @@ $(document).ready(
             });
         $('#btn_eval').click(
             function() {
-                TryDatomic.doEval(TryDatomic.editor)();
+                TryDatomic.doEval(TryDatomic.editor);
             });
     });
