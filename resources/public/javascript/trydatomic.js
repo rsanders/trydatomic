@@ -12,8 +12,13 @@ function sendbuffer(cm) {
 
 
 var TryDatomic = {
-    sendbuffer: function() {
-        this.sendQuery(this.getEditorSelection());
+    doQuery: function() {
+        var text = this.repl.store();
+        if (text && text != '') {
+            this.sendQuery(text); 
+        } else {
+            alert("Nothing to send");
+        }
     },
 
     sendQuery:    function(query)  {
@@ -59,30 +64,38 @@ var TryDatomic = {
     }
 }
 
-$(document).ready(function() {
-    TryDatomic.editor = CodeMirror.fromTextArea(document.getElementById('userinput'), {
-      value: "",
-      mode:  "clojure",
-      lineNumbers: true,
-      keyMap: "trydatomic",
-      fixedGutter: true,
-      extraKeys: {
-        // "Ctrl-Enter": function(cm) { TryDatomic.sendbuffer(cm); } 
-      }
-  });
-  $('.userinput .CodeMirror-scroll').height('500px');
-  TryDatomic.resultsbox = CodeMirror.fromTextArea(document.getElementById('result'), {
-      value: "",
-      mode:  "clojure",
-      lineNumbers: true,
-      keyMap: "trydatomic",
-      fixedGutter: true,
-      readOnly: true,
-  });
-  $('.result .CodeMirror-scroll').height('600px');
+$(document).ready(
+    function() {
+        TryDatomic.editor = CodeMirror.fromTextArea(document.getElementById('userinput'), {
+                                                        value: "",
+                                                        mode:  "clojure",
+                                                        lineNumbers: true,
+                                                        keyMap: "trydatomic",
+                                                        fixedGutter: true,
+                                                        matchBrackets: true,
+                                                        extraKeys: {
+                                                            // "Ctrl-Enter": function(cm) { TryDatomic.sendbuffer(cm); } 
+                                                        }
+                                                    });
+        TryDatomic.repl = new ReplEditor(TryDatomic.editor);
+        TryDatomic.repl.enableHistory();
 
-  // setup buttons
-  $('#btn_query').click(function() {
-    TryDatomic.sendbuffer(TryDatomic.editor);
-  });
-});
+        $('.userinput .CodeMirror-scroll').height('500px');
+        TryDatomic.resultsbox = CodeMirror.fromTextArea(document.getElementById('result'), {
+                                                            value: "",
+                                                            mode:  "clojure",
+                                                            lineNumbers: true,
+                                                            keyMap: "trydatomic",
+                                                            fixedGutter: true,
+                                                            readOnly: true,
+                                                        });
+        $('.result .CodeMirror-scroll').height('600px');
+        
+        // setup buttons
+        $('#btn_query').click(function() {
+                                  TryDatomic.doQuery(TryDatomic.editor);
+                              });
+        $('#btn_transact').click(function() {
+                                  TryDatomic.doTransact(TryDatomic.editor);
+                              });
+    });
