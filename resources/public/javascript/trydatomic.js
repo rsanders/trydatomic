@@ -37,7 +37,7 @@ var TryDatomic = {
 
         var console_out = "", i = 0, len = data.results.length;
         for (i=0; i < len; i++) {
-            console_out += "> " + data.exprs[i] + "\n" + data.results[i] + "\n\n";
+            console_out += ";; " + data.exprs[i] + "\n" + data.results[i] + "\n\n";
         }
 
         this.handleResult(console_out);
