@@ -12,10 +12,36 @@ function sendbuffer(cm) {
 
 
 var TryDatomic = {
+    resetDB: function() {
+      this.eval_clojure("(dbutil/reset-database)");
+    },
+
+    doEval: function() {
+        var text = this.repl.store();
+        if (text && text != '') {
+            this.sendClojure(text); 
+        } else {
+            alert("Nothing to send");
+        }
+    },
+
+    sendClojure:    function(query)  {
+        // perform evaluation
+        var data = this.eval_clojure(query);
+
+        // handle error
+        if (data.error) {
+            this.handleError(data.message);
+            return;
+        }
+
+        this.handleResult(data.result);
+    },
+
     doQuery: function() {
         var text = this.repl.store();
         if (text && text != '') {
-            this.sendQuery(text); 
+            this.sendClojure(text); 
         } else {
             alert("Nothing to send");
         }
@@ -90,6 +116,19 @@ var TryDatomic = {
         return data;
     },
 
+    eval_clojure: function(code) {
+        var data;
+        $.ajax({
+                   url: "eval.json",
+                   data: { expr : code },
+                   async: false,
+                   type: 'post',
+                   success: function(res) { data = res; }
+               });
+        return data;
+    },
+
+
     handleResult: function(result) {
         this.resultsbox.setValue(result);
     },
@@ -135,5 +174,13 @@ $(document).ready(
         $('#btn_transact').click(
             function() {
                 TryDatomic.doTransact(TryDatomic.editor);
+            });
+        $('#btn_resetdb').click(
+            function() {
+                TryDatomic.resetDB();
+            });
+        $('#btn_eval').click(
+            function() {
+                TryDatomic.doEval(TryDatomic.editor)();
             });
     });
