@@ -35,7 +35,12 @@ var TryDatomic = {
             return;
         }
 
-        this.handleResult(data.results.join("\n"));
+        var console_out = "", i = 0, len = data.results.length;
+        for (i=0; i < len; i++) {
+            console_out += "> " + data.exprs[i] + "\n" + data.results[i] + "\n\n";
+        }
+
+        this.handleResult(console_out);
     },
 
     doQuery: function() {
