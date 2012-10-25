@@ -27,7 +27,7 @@
            :init '(do (require '[clojure.repl :refer [doc source]])
                       (require '[datomic.api :as datomic :refer [db q]])
                       (require '[webcli.util.db :as dbutil])
-                      (def conn (dbutil/create-sample-database (gensym "trydb")))
+                      (dbutil/reset-database)
                       (future (Thread/sleep 600000)
                               (-> *ns* .getName remove-ns)))))
 

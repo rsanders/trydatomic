@@ -22,7 +22,7 @@
 
 (defn make-query-form [query]
   (let [[findexpr otherargs] (split-query query)]
-    `(dbutil/run-query '~findexpr ~'conn '~otherargs)
+    `(dbutil/run-query '~findexpr nil '~otherargs)
   ))
 
 (defn eval-query [query sbox]
@@ -39,7 +39,7 @@
 
 ;;;
 (defn make-transact-form [txexpr]
-  `(dbutil/run-transact '~txexpr ~'conn))
+  `(dbutil/run-transact '~txexpr nil))
 
 (defn eval-transact [query sbox]
   (let [form (make-transact-form query)]
