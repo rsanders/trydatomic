@@ -159,6 +159,7 @@ $(document).ready(
                                                     });
         TryDatomic.repl = new ReplEditor(TryDatomic.editor);
         TryDatomic.repl.enableHistory();
+        ZmacsMode.install(TryDatomic.editor);
 
         $('.userinput .CodeMirror-scroll').height('500px');
         TryDatomic.resultsbox = CodeMirror.fromTextArea(document.getElementById('result'), {
