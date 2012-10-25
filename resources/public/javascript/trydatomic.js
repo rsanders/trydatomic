@@ -96,7 +96,7 @@ var TryDatomic = {
     handleError:  function(error)  {
         this.resultsbox.setValue(error);
     }
-}
+};
 
 $(document).ready(
     function() {
@@ -107,8 +107,10 @@ $(document).ready(
                                                         keyMap: "trydatomic",
                                                         fixedGutter: true,
                                                         matchBrackets: true,
+                                                        lineWrapping: true,
+                                                        autofocus: true,
                                                         extraKeys: {
-                                                            // "Ctrl-Enter": function(cm) { TryDatomic.sendbuffer(cm); } 
+                                                         // test    
                                                         }
                                                     });
         TryDatomic.repl = new ReplEditor(TryDatomic.editor);

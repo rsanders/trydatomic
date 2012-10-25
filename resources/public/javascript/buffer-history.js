@@ -7,6 +7,7 @@ if(!String.prototype.trim) {
 
 function ReplEditor(e) {
   this.editor = e;
+  this.historyEnabled = false;
   this.replHist = [];
   this.clearHistory();
 }
@@ -16,22 +17,23 @@ ReplEditor.prototype.store = function() {
   var b = e.getValue();
   var s = e.getSelection();
   b = b.trim();
-  s = b.trim();
+  s = s.trim();
   var text = (s == "") ? b : s;
 
   if (text == "")
     return null;     // nothing to do
 
-  this.replHist [this.nextHistNdx++] = text;
-  this.ndxHist = this.nextHistNdx; // history pointer past freshest item
-  if (this.ndxHist > 1) {
-    if (this.replHist[this.ndxHist-1] == this.replHist[this.ndxHist-2]) {
-      // do not polute history with the same buffer values
-      this.ndxHist--;
-      this.nextHistNdx--;
-    }
+  if (this.historyEnabled) {      
+      this.replHist [this.nextHistNdx++] = text;
+      this.ndxHist = this.nextHistNdx; // history pointer past freshest item
+      if (this.ndxHist > 1) {
+          if (this.replHist[this.ndxHist-1] == this.replHist[this.ndxHist-2]) {
+              // do not polute history with the same buffer values
+              this.ndxHist--;
+              this.nextHistNdx--;
+          }
+      }
   }
-
   return text;
 };
 
@@ -56,6 +58,7 @@ ReplEditor.prototype.restoreBuffer = function(e, b) {
 };
 
 ReplEditor.prototype.histBack = function(e) {
+  if (!this.historyEnabled) return;
   if (this.ndxHist > 0) {
     if (this.ndxHist == this.nextHistNdx) {
       var b = e.getValue();
@@ -74,6 +77,7 @@ ReplEditor.prototype.histBack = function(e) {
 };
 
 ReplEditor.prototype.histFwd = function(e) {
+  if (!this.historyEnabled) return;
   if (this.ndxHist < this.nextHistNdx) {
     this.ndxHist++;
     if (this.ndxHist < this.nextHistNdx) {
@@ -90,17 +94,20 @@ ReplEditor.prototype.clearEditor = function(e) {
 };
 
 ReplEditor.prototype.clearHistory = function(e) {
+  this.replHist = [];
   this.ndxHist = this.nextHistNdx = 0;
 };
 
 // you must call this before using any history calls
 ReplEditor.prototype.enableHistory = function(e) {
-  this.replHist = [];
-  this.clearHistory();
-  CodeMirror.keyMap.trydatomic["Ctrl-Up"]    = function(e) { this.histBack(e) };
-  CodeMirror.keyMap.trydatomic["Ctrl-Down"]  = function(e) { this.histFwd(e) };
-  CodeMirror.keyMap.trydatomic["Ctrl-Home"]  = function(e) { this.clearEditor(e) };
-  CodeMirror.keyMap.trydatomic["Ctrl-End"]   = function(e) { this.clearHistory(e) };
-}
+  this.historyEnabled = true;
+  this.clearHistory();    
+  var me = this;
+  CodeMirror.keyMap.trydatomic["Ctrl-Up"]    = function(e) { me.histBack(e) };
+  CodeMirror.keyMap.trydatomic["Ctrl-Down"]  = function(e) { me.histFwd(e) };
+  CodeMirror.keyMap.trydatomic["Ctrl-Home"]  = function(e) { me.clearEditor(e) };
+  CodeMirror.keyMap.trydatomic["Ctrl-End"]   = function(e) { me.clearHistory(e) };
+};
+
 
 
