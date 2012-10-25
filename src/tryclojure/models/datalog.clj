@@ -33,15 +33,42 @@
          :result [out result]}))))
 
 (defn eval-query-string [expr sbox]
+  (log "EQS!")
   (let [form (binding [*read-eval* false] (read-string (str "[" expr "]")))]
     (eval-query form sbox)))
+
+;;;
+(defn make-transact-form [txexpr]
+  `(dbutil/run-transact '~txexpr ~'conn))
+
+(defn eval-transact [query sbox]
+  (let [form (make-transact-form query)]
+    (with-open [out (StringWriter.)]
+      (let [result (sbox form {#'*out* out})]
+        {:expr query
+         :result [out result]}))))
+
+(defn eval-transact-string [expr sbox]
+  (log "ETS!")
+  (let [form (binding [*read-eval* false] (read-string (str "[" expr "]")))]
+    (eval-transact form sbox)))
+
+;;;
 
 (defn get-conn []
   (session/get "sb"))
 
-(defn eval-request [expr]
+(defn eval-query-request [expr]
   (try
     (eval-query-string expr (get (session/swap! eval/find-sb) "sb"))
+    (catch TimeoutException _
+      {:error true :message "Execution Timed Out!"})
+    (catch Exception e
+      {:error true :message (str (root-cause e))})))
+
+(defn eval-transact-request [expr]
+  (try
+    (eval-transact-string expr (get (session/swap! eval/find-sb) "sb"))
     (catch TimeoutException _
       {:error true :message "Execution Timed Out!"})
     (catch Exception e

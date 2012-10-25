@@ -1,5 +1,5 @@
 (ns webcli.util.db
-  (:use [datomic.api :only [db q] :as d])
+  (:use [datomic.api :only [db q transact] :as d])
   (:import java.io.StringWriter
 	   java.util.concurrent.TimeoutException))
 
@@ -8,7 +8,7 @@
     (d/create-database uri)
     (let [conn (d/connect uri)
           schema (read-string (slurp "resources/public/samples/seattle/seattle-schema.dtm"))
-          data (read-string (slurp "resources/public/samples/seattle/seattle-data0.dtm"))]
+          data   (read-string (slurp "resources/public/samples/seattle/seattle-data0.dtm"))]
       @(d/transact conn schema)
       @(d/transact conn data)
       conn)))
@@ -20,3 +20,8 @@
   (let [results (apply d/q (concat (list query (d/db conn)) otherargs))]
     (println "Found" (count results) "results")
     (doseq [x results] (println x))))
+
+(defn run-transact [query conn] 
+  (let [result-future (transact conn query)
+        result        @result-future]
+    (doseq [x (:tx-data result)] (println x))))
