@@ -77,7 +77,7 @@ window.CodeMirror = (function() {
     // Selection-related flags. shiftSelecting obviously tracks
     // whether the user is holding shift.
     var shiftSelecting, lastClick, lastDoubleClick, lastScrollTop = 0, draggingText,
-        overwrite = false, suppressEdits = false, pasteIncoming = false;
+        overwrite = false, suppressEdits = false, pasteIncoming = false, selectionMark;
     // Variables used by startOperation/endOperation to track what
     // happened during the operation.
     var updateInput, userSelChange, changes, textChanged, selectionChanged,
@@ -176,6 +176,8 @@ window.CodeMirror = (function() {
           updateDisplay(true);
         }
       },
+      setSelectionMark: function(pos) { selectionMark = pos; },
+      getSelectionMark: function() { return selectionMark; },
       getOption: function(option) {return options[option];},
       getMode: function() {return mode;},
       undo: operation(undo),
@@ -1271,12 +1273,16 @@ window.CodeMirror = (function() {
       }
     }
 
+    function getSelectionMark() {
+      return shiftSelecting || selectionMark;
+    }
     function setShift(val) {
       if (val) shiftSelecting = shiftSelecting || (sel.inverted ? sel.to : sel.from);
       else shiftSelecting = null;
     }
     function setSelectionUser(from, to) {
-      var sh = shiftSelecting && clipPos(shiftSelecting);
+      var selectionMark = getSelectionMark();
+      var sh = selectionMark && clipPos(selectionMark);
       if (sh) {
         if (posLess(sh, from)) from = sh;
         else if (posLess(to, sh)) to = sh;
@@ -1388,7 +1394,7 @@ window.CodeMirror = (function() {
     }
     function moveH(dir, unit) {
       var pos = dir < 0 ? sel.from : sel.to;
-      if (shiftSelecting || posEq(sel.from, sel.to)) pos = findPosH(dir, unit);
+      if (getSelectionMark() || posEq(sel.from, sel.to)) pos = findPosH(dir, unit);
       setCursor(pos.line, pos.ch, true);
     }
     function deleteH(dir, unit) {

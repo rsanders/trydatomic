@@ -9,11 +9,17 @@
   function getFromRing() { return killRing[killRing.length - 1] || ""; }
   function popFromRing() { if (killRing.length > 1) killRing.pop(); return getFromRing(); }
 
+  function clearSelection(cm) {
+      var cur = cm.getCursor();
+      cm.setSelectionMark(null);
+      cm.setSelection(cur, cur);
+  }
+
   CodeMirror.keyMap.emacs = {
     "Ctrl-X": function(cm) {cm.setOption("keyMap", "emacs-Ctrl-X");},
     "Ctrl-W": function(cm) {addToRing(cm.getSelection()); cm.replaceSelection("");},
     "Ctrl-Alt-W": function(cm) {addToRing(cm.getSelection()); cm.replaceSelection("");},
-    "Alt-W": function(cm) {addToRing(cm.getSelection());},
+    "Alt-W": function(cm) {addToRing(cm.getSelection()); clearSelection(cm); },
     "Ctrl-Y": function(cm) {cm.replaceSelection(getFromRing());},
     "Alt-Y": function(cm) {cm.replaceSelection(popFromRing());},
     "Ctrl-/": "undo", "Shift-Ctrl--": "undo", "Shift-Alt-,": "goDocStart", "Shift-Alt-.": "goDocEnd",
