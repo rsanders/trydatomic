@@ -13,7 +13,7 @@ function sendbuffer(cm) {
 
 var TryDatomic = {
     resetDB: function() {
-      this.eval_clojure("(dbutil/reset-database)");
+      this.sendClojure("(dbutil/reset-database)");
     },
 
     doEval: function() {
