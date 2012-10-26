@@ -161,7 +161,7 @@ $(document).ready(
         TryDatomic.repl.enableHistory();
         ZmacsMode.install(TryDatomic.editor);
 
-        $('.userinput .CodeMirror-scroll').height('500px');
+        $('.userinput .CodeMirror').height('500px');
         TryDatomic.resultsbox = CodeMirror.fromTextArea(document.getElementById('result'), {
                                                             value: "",
                                                             mode:  "clojure",
@@ -170,7 +170,7 @@ $(document).ready(
                                                             fixedGutter: true,
                                                             readOnly: true,
                                                         });
-        $('.result .CodeMirror-scroll').height('600px');
+        $('.result .CodeMirror').height('600px');
         
         var trackAction = function(action) {
             _gaq.push(['_trackEvent', 'UI', action, 'buffer']);
