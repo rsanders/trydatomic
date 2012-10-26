@@ -46,7 +46,7 @@ var TryDatomic = {
     doQuery: function() {
         var text = this.repl.store();
         if (text && text != '') {
-            this.sendClojure(text); 
+            this.sendQuery(text); 
         } else {
             alert("Nothing to send");
         }
