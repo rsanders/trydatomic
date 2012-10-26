@@ -16,11 +16,16 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
   var getMode = (function () {
     var i, modes = {}, mimes = {}, mime;
 
-    var list = CodeMirror.listModes();
+    var list = [];
+    for (var m in CodeMirror.modes)
+      if (CodeMirror.modes.propertyIsEnumerable(m)) list.push(m);
     for (i = 0; i < list.length; i++) {
       modes[list[i]] = list[i];
     }
-    var mimesList = CodeMirror.listMIMEs();
+    var mimesList = [];
+    for (var m in CodeMirror.mimeModes)
+      if (CodeMirror.mimeModes.propertyIsEnumerable(m))
+        mimesList.push({mime: m, mode: CodeMirror.mimeModes[m]});
     for (i = 0; i < mimesList.length; i++) {
       mime = mimesList[i].mime;
       mimes[mime] = mimesList[i].mime;
