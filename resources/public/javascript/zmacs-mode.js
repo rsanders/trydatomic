@@ -6,7 +6,7 @@
     this.inHook = 0;
     
     this.reset();
-    this.editor.setOption('onChange', function(cm, changelist) { 
+    this.editor.on('change', function(cm, changelist) { 
       setTimeout(function() { me.onChange(cm, changelist); }, 0);
     });
   };
