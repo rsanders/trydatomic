@@ -1,3 +1,7 @@
+$(function() {
+      exports = window;
+      edn = require("edn");
+});
 
 function sendbuffer(cm) {
     // take either the selection or the entire buffer
