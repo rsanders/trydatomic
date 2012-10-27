@@ -153,6 +153,7 @@ $(document).ready(
                                                         matchBrackets: true,
                                                         lineWrapping: true,
                                                         autofocus: true,
+                                                        theme: 'datomicblue',
                                                         extraKeys: {
                                                          // test    
                                                         }
@@ -168,13 +169,14 @@ $(document).ready(
                                                             lineNumbers: true,
                                                             keyMap: "trydatomic",
                                                             fixedGutter: true,
+                                                            theme: 'datomicblue',
                                                             readOnly: true,
                                                         });
         $('.result .CodeMirror').height('600px');
         
         var trackAction = function(action) {
             _gaq.push(['_trackEvent', 'UI', action, 'buffer']);
-        }
+        };
 
         // setup buttons
         $('#btn_query').click(
