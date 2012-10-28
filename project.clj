@@ -11,18 +11,18 @@
   :dev-dependencies [[org.clojure/tools.nrepl "0.2.0-beta10"]]
 
   ;; see https://github.com/emezeske/lein-cljsbuild/blob/0.2.9/sample.project.clj
-  ;; :plugins [[lein-cljsbuild "0.2.9"]]
-  ;; :hooks [leiningen.cljsbuild]
-  ;; :cljsbuild {
-  ;;   :builds [{
-  ;;       ; The path to the top-level ClojureScript source directory:
-  ;;       :source-path "src-cljs"
-  ;;       ; The standard ClojureScript compiler options:
-  ;;       ; (See the ClojureScript compiler documentation for details.)
-  ;;       :compiler {
-  ;;         :output-to "resources/public/javascript/main.js"  ; default: main.js in current directory
-  ;;         :optimizations :whitespace
-  ;;         :pretty-print true}}]}
+  :plugins [[lein-cljsbuild "0.2.9"]]
+  :hooks [leiningen.cljsbuild]
+  :cljsbuild {
+    :builds [{
+        ; The path to the top-level ClojureScript source directory:
+        :source-path "src-cljs"
+        ; The standard ClojureScript compiler options:
+        ; (See the ClojureScript compiler documentation for details.)
+        :compiler {
+          :output-to "resources/public/compiled/main.js"  ; default: main.js in current directory
+          :optimizations :whitespace
+          :pretty-print true}}]}
   :min-lein-version "2"
   :url "http://trydatomic.herokuapp.com/"
   :jvm-opts ["-Djava.security.policy=example.policy""-Xmx80M"]
