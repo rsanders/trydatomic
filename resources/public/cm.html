@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CM Editor Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://app.divshot.com/css/divshot-util.css">
+    <link rel="stylesheet" href="https://app.divshot.com/css/bootstrap.css">
+    <link rel="stylesheet" href="https://app.divshot.com/css/bootstrap-responsive.css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <link href="codemirror/lib/codemirror.css" rel="stylesheet" type="text/css">
+    <link href="css/trydatomic.css" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+    <script src="codemirror/lib/codemirror.js" type="text/javascript"></script>
+    <script src="codemirror/keymap/emacs.js" type="text/javascript"></script>
+    <script src="codemirror/mode/clojure/clojure.js" type="text/javascript"></script>
+    <script src="codemirror/lib/util/matchbrackets.js" type="text/javascript"></script>
+    <script src="codemirror/lib/util/foldcode.js" type="text/javascript"></script>
+    <script src="test/cm.js" type="text/javascript"></script>
+    <script src="javascript/zmacs-mode.js"  type="text/javascript"></script>
+  </head>
+  <body>
+    <div class="navbar" id="main_nav" style="display:none;">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Try Datomic</a>
+          <div class="navbar-content">
+            <ul class="nav ">
+              <li class="active">
+                <a href="#">Home</a> 
+              </li>
+              <li>
+                <a href="/about">About</a> 
+              </li>
+              <li>
+                <a href="http://docs.datomic.com/tutorial.html">Tutorial</a> 
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <h1>Enter your code below</h1>
+          <div class="btn-group"></div>
+          <div class="control-group userinput codemirror" id="userinput_wrap">
+            <label class="control-label" for="userinput">
+              <br> 
+            </label>
+            <div class="controls">
+              <textarea rows="25" cols="90" placeholder="[]" name="userinput"
+                        id="userinput">
+;;;
+;;; Brute force technique looking at all possible outcomes for every move and picking the one with the
+;;; most wins.  This is not nearly as smart as minimax, as it assumes a random opponent and even then
+;;; cannot guarantee a non-loss.  (It may be more likely to find wins against a random opponent, though)
+;;;
+;; Still falls victim to this strategy, with human as :x and bruteforce as :o
+;;
+;; You are player :x
+;; Your move? 
+;; 8
+;; You chose 8
+;; [:x  _  _]
+;; [ _ :o  _]
+;; [ _  _ :x]
+
+;; ({:results {:draw 12, :x 32, :o 44}, :move 6} {:results {:x 32, :draw 12, :o 44}, :move 2},
+;;  {:results {:draw 12, :o 40, :x 34}, :move 7} {:results {:draw 12, :x 34, :o 40}, :move 5}
+;;  {:results {:x 34, :draw 12, :o 40}, :move 3} {:results {:draw 12, :o 40, :x 34}, :move 1})
+;;
+;; [:x  _  _]
+;; [ _ :o  _]
+;; [:o  _ :x]
+;;
+;; Note that at this point :o has lost the game.
+;;
+
+(ns tictactoe.solver.brute
+  (:require [tictactoe.core :as ttt]
+            [tictactoe.transform :as transform]))
+
+(def done-board-1
+  [ :x  :o  :x
+    :o  :x  :o
+   nil nil nil])
+
+(def done-board-2
+  [ :x  nil  :o
+    :o  nil  :x
+   nil nil  :x])
+
+(def done-board-3
+[ :x  nil  :o
+  :o   :o  :x
+  nil nil  :x])
+
+;;;
+
+(defn find-wins [board player]
+  (or (ttt/winner board)      
+      (map (fn [move] (find-wins (ttt/board-with-move board player move) (ttt/next-player player)))
+           (ttt/find-empty-positions board))))
+
+(defn count-wins [board player]
+  (count (filter #(= player %) (flatten (find-wins board player)))))
+
+;;;
+
+(defn find-most-wins [board player]
+  (let [
+        candidates (ttt/find-empty-positions board)
+        scores     (map (fn [pos]
+                          [(count-wins (ttt/board-with-move board player pos) player) pos]) candidates)
+        ]
+     (last (last (sort scores )))
+    )
+  )
+
+(defn find-fewest-losses [board player]
+  (let [
+        candidates (ttt/find-empty-positions board)
+        scores     (map (fn [pos]
+                          [(count-wins (ttt/board-with-move board player pos) (ttt/next-player player)) pos]) candidates)
+        ]
+    (println "[brute] for player" player "scores are" scores)
+    (last (first (sort scores))))
+  )
+
+
+(defn sum-results [board player]
+  (let [winner (ttt/winner board)]
+    (cond 
+          ;; chicken dinner
+          winner                    {winner 1}
+          ;; board is full 
+          (every? identity board)   {:draw 1}
+          :else (apply merge-with +
+                            (flatten (map (fn [move] (sum-results (ttt/board-with-move board player move) (ttt/next-player player)))
+                                          (ttt/find-empty-positions board)))))))
+
+(defn odds-of
+  [result scores]
+  (let [total (apply + (vals scores))
+        examined (or (scores result) 0)]
+    (/ examined total 1.0)))
+
+(defn find-highest-odds
+  "Look for the move with the highest percentage chance of winning"
+  [board player]
+  (let [
+        candidates (transform/find-unique-positions board)
+        next-player (ttt/next-player player)
+        scores     (pmap (fn [pos]
+                          {:results (sum-results (ttt/board-with-move board player pos) next-player) 
+                           :move pos})
+                        candidates)
+        sorted-scores (sort (fn [a b]
+                          (compare (odds-of player (:results a)) (odds-of player (:results b))))
+                        scores)
+        ]
+    (println "[brute]" (reverse sorted-scores))
+    (:move (last sorted-scores))))
+
+(defn find-draws
+  "Look for the move with the highest percentage chance of drawing"
+  [board player]
+  (let [
+        candidates (ttt/find-empty-positions board)
+        next-player (ttt/next-player player)
+        scores     (map (fn [pos]
+                          {:results (sum-results (ttt/board-with-move board player pos) next-player) 
+                           :move pos})
+                        candidates)
+        sorted-scores (sort (fn [a b]
+                              (compare (odds-of :draw (:results a)) (odds-of :draw (:results b))))
+                            scores)
+        ]
+    (println "[brute]" (reverse sorted-scores))
+    (:move (last sorted-scores))))
+
+
+;;
+;; using a hybrid approach here - take or block immediate winning moves
+;; otherwise look for highest odds of winning
+;;o  _ :x]
+
+
+(defn solver-function [board player]
+  (let [my-winner    (ttt/find-winner-for board player)
+        their-winner (ttt/find-winner-for board (ttt/next-player player))]
+   (cond
+    (every? not board) (first (shuffle (range 9)))
+    ;; claim victory
+    my-winner           my-winner
+
+    ;; thwart victory
+    their-winner        their-winner
+    :else              (find-highest-odds board player))))
+
+(defn make-solver 
+  "Returns a function which picks moves given a board and player symbol"
+  []
+  solver-function)
+</textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
