@@ -10,22 +10,30 @@
                  [clojail "1.0.3"]]
   :dev-dependencies [[org.clojure/tools.nrepl "0.2.0-beta10"]]
 
+  ;; build and project structure
+  :source-paths ["src/clj"]
+  
   ;; see https://github.com/emezeske/lein-cljsbuild/blob/0.2.9/sample.project.clj
   :plugins [[lein-cljsbuild "0.2.9"]]
   :hooks [leiningen.cljsbuild]
   :cljsbuild {
     :builds [{
         ; The path to the top-level ClojureScript source directory:
-        :source-path "src-cljs"
+        :source-path "src/cljs"
         ; The standard ClojureScript compiler options:
         ; (See the ClojureScript compiler documentation for details.)
         :compiler {
           :output-to "resources/public/compiled/main.js"  ; default: main.js in current directory
           :optimizations :whitespace
-          :pretty-print true}}]}
+                   :pretty-print true}}]}
+  
   :min-lein-version "2"
   :url "http://trydatomic.herokuapp.com/"
   :jvm-opts ["-Djava.security.policy=example.policy""-Xmx80M"]
   :main tryclojure.server)
 
+;;;
+;;; see
+;;; https://github.com/technomancy/leiningen/blob/master/sample.project.clj
+;;;
 

@@ -2,7 +2,7 @@
   (:require [noir.server :as server]
             [ring.middleware.file :refer [wrap-file]]))
 
-(server/load-views "src/tryclojure/views")
+(server/load-views "src/clj/tryclojure/views")
 
 (defn to-port [s]
   (when-let [port s] (Long. port)))
