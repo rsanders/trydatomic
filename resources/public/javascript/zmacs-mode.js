@@ -27,6 +27,15 @@
     this.clearMark();
   };
 
+  ZmacsMode.prototype.exchangePointAndMark = function(e) {    
+    var point = e.getCursor(),
+        mark  = e.getSelectionMark();
+    if (mark) {
+      e.setSelectionMark(point);
+      e.setCursor(mark);
+    }
+  };
+
   // you must call this before using any history calls
   ZmacsMode.prototype.reset = function(e) {
     this.markSet = false;
@@ -34,6 +43,7 @@
     var me = this;
     CodeMirror.keyMap.emacs["Ctrl-Space"]  = function(e) { me.setMark(e) };
     CodeMirror.keyMap.emacs["Ctrl-G"]      = function(e) { me.clearMark(e) };
+    CodeMirror.keyMap["emacs-Ctrl-X"]["Ctrl-X"]   = function(e) { me.exchangePointAndMark(e) };
   };
 
   ZmacsMode.install = function(e) {

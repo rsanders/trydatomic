@@ -2880,7 +2880,8 @@ window.CodeMirror = (function() {
   keyMap.emacsy = {
     "Ctrl-F": "goCharRight", "Ctrl-B": "goCharLeft", "Ctrl-P": "goLineUp", "Ctrl-N": "goLineDown",
     "Alt-F": "goWordRight", "Alt-B": "goWordLeft", "Ctrl-A": "goLineStart", "Ctrl-E": "goLineEnd",
-    "Ctrl-V": "goPageUp", "Shift-Ctrl-V": "goPageDown", "Ctrl-D": "delCharAfter", "Ctrl-H": "delCharBefore",
+    "Ctrl-V": "goPageDown", "Shift-Ctrl-V": "goPageDown", "Ctrl-D": "delCharAfter", "Ctrl-H": "delCharBefore",
+    "Alt-V": "goPageUp", 
     "Alt-D": "delWordAfter", "Alt-Backspace": "delWordBefore", "Ctrl-K": "killLine", "Ctrl-T": "transposeChars"
   };
 
